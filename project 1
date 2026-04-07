@@ -1,0 +1,23 @@
+import pandas as pd
+import matplotlib.pyplot as plt 
+data = {
+    "Date": ["2026-02-10", "2026-02-10", "2026-02-11", "2026-02-11", "2026-02-12"],
+    "Category": ["Food", "Travel", "Shopping", "Food", "Entertainment"],
+    "Amount": [250, 100, 1200, 300, 500]
+}
+df = pd.DataFrame(data)
+total_expense = df["Amount"].sum()
+category_expense = df.groupby("Category")["Amount"].sum()
+highest_category = category_expense.idxmax()
+df.to_csv("expense_report.csv", index=False)
+print("- Expense Data -")
+df
+print("\nTotal Expense:", total_expense)
+print("\nCategory-wise Expense:")
+print(category_expense)
+print("\nHighest Spending Category:", highest_category)
+plt.bar(category_expense.index , category_expense.values)
+plt.xlabel("category")
+plt.ylabel("total expense")
+plt.title("category wise expense")
+plt.show
