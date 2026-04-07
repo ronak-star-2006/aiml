@@ -1,0 +1,81 @@
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+
+iris = load_iris()
+
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+df["species"] = iris.target
+
+df["species"] = df["species"].map({
+    0: "Setosa",
+    1: "Versicolor",
+    2: "Virginica"
+})
+
+print("First 5 rows of the dataset:")
+print(df.head())
+
+plt.figure()
+for species in df["species"].unique():
+    data = df[df["species"] == species]
+    plt.scatter(
+        data["sepal length (cm)"],
+        data["sepal width (cm)"],
+        label=species
+    )
+
+plt.xlabel("Sepal Length (cm)")
+plt.ylabel("Sepal Width (cm)")
+plt.title("Sepal Length vs Sepal Width")
+plt.legend()
+plt.show()
+
+plt.figure()
+for species in df["species"].unique():
+    data = df[df["species"] == species]
+    plt.scatter(
+        data["petal length (cm)"],
+        data["petal width (cm)"],
+        label=species
+    )
+
+plt.xlabel("Petal Length (cm)")
+plt.ylabel("Petal Width (cm)")
+plt.title("Petal Length vs Petal Width")
+plt.legend()
+plt.show()
+
+plt.figure()
+for species in df["species"].unique():
+    data = df[df["species"] == species]
+    plt.hist(
+        data["petal length (cm)"],
+        alpha=0.6,
+        label=species
+    )
+
+plt.xlabel("Petal Length (cm)")
+plt.ylabel("Frequency")
+plt.title("Petal Length Distribution")
+plt.legend()
+plt.show()
+
+plt.figure()
+for species in df["species"].unique():
+    data = df[df["species"] == species]
+    plt.hist(
+        data["sepal width (cm)"],
+        alpha=0.6,
+        label=species
+    )
+
+plt.xlabel("Sepal Width (cm)")
+plt.ylabel("Frequency")
+plt.title("Sepal Width Distribution")
+plt.legend()
+plt.show()
+
+print("\nVisualization completed successfully.")
