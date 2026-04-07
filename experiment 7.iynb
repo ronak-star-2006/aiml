@@ -1,0 +1,44 @@
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# 🔹 Load dataset (ONLY output.csv)
+df = pd.read_csv('output.csv')
+
+print("🔸 Original Data:")
+print(df.head())
+
+# =========================
+# 🔤 ONE-HOT ENCODING
+# =========================
+
+# Select categorical columns
+categorical_cols = df.select_dtypes(include=['object']).columns
+
+print("\n🔸 Categorical Columns:")
+print(categorical_cols)
+
+# Apply One-Hot Encoding
+df = pd.get_dummies(df, columns=categorical_cols, drop_first=True)
+
+print("\n🔸 After One-Hot Encoding:")
+print(df.head())
+
+# =========================
+# 📏 FEATURE SCALING
+# =========================
+
+# Select numerical columns
+numerical_cols = df.select_dtypes(include=['number']).columns
+
+scaler = StandardScaler()
+df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+
+print("\n🔸 After Feature Scaling:")
+print(df.head())
+
+# =========================
+# 💾 SAVE FINAL DATA
+# =========================
+
+df.to_csv('final_preprocessed_data.csv', index=False)
+print("\n✅ Final dataset saved as 'final_preprocessed_data.csv'")
