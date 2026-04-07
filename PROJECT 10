@@ -1,0 +1,30 @@
+import random
+
+print("🎮 Number Guessing Game")
+
+# 🔹 Generate random number
+number = random.randint(1, 100)
+
+attempts = 0
+
+while True:
+    guess = int(input("\nEnter your guess (1-100): "))
+    attempts += 1
+
+    if guess > number:
+        print("📉 Too High!")
+    elif guess < number:
+        print("📈 Too Low!")
+    else:
+        print("\n🎉 Correct! You guessed the number!")
+        print("🔢 Total Attempts:", attempts)
+
+        # Score logic
+        if attempts <= 5:
+            print("🏆 Excellent!")
+        elif attempts <= 10:
+            print("👍 Good Job!")
+        else:
+            print("😅 Try to improve!")
+
+        break
