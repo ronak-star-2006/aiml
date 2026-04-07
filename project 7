@@ -1,0 +1,17 @@
+import pandas as pd 
+data = {
+    "Name": ["Amit", "Riya", "Karan", "Sneha"],
+    "Maths": [78, 85, 67, 90],
+    "Physics": [72, 88, 70, 95],
+    "Chemistry": [75, 80, 65, 85]
+}
+
+df = pd.DataFrame(data)
+df
+df["Total"] = df["Maths"] + df["Physics"] + df["Chemistry"]
+df
+
+df["Average"] = df["Total"] / 3
+df
+topper = df.loc[df["Total"].idxmax()]
+topper
