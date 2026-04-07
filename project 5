@@ -1,0 +1,50 @@
+import pandas as pd
+data = {
+    "Question": [
+        "What is the capital of India?",
+        "What is 10 + 5?",
+        "Which planet is known as Red Planet?",
+        "Who developed Python language?"
+    ],
+    "A": ["Mumbai", "12", "Earth", "Dennis Ritchie"],
+    "B": ["Delhi", "15", "Mars", "Guido van Rossum"],
+    "C": ["Chennai", "20", "Jupiter", "James Gosling"],
+    "D": ["Kolkata", "10", "Saturn", "Charles Babbage"],
+    "Answer": ["B", "B", "B", "B"]
+}
+
+quiz = pd.DataFrame(data)
+
+score = 0
+
+print("===== Welcome to Quiz =====\n")
+
+
+for i in range(len(quiz)):
+    
+    print("Q", i+1, ":", quiz.loc[i, "Question"])
+    print("A.", quiz.loc[i, "A"])
+    print("B.", quiz.loc[i, "B"])
+    print("C.", quiz.loc[i, "C"])
+    print("D.", quiz.loc[i, "D"])
+    
+    user_answer = input("Enter your answer (A/B/C/D): ").upper()
+    
+    if user_answer == quiz.loc[i, "Answer"]:
+        print("Correct \n")
+        score += 1
+    else:
+        print("Wrong Correct answer is:", quiz.loc[i, "Answer"], "\n")
+
+
+print("Your Final Score:", score, "out of", len(quiz))
+
+percentage = (score / len(quiz)) * 100
+print("Your Percentage:", percentage, "%")
+
+if percentage == 100:
+    print("Excellent ")
+elif percentage >= 50:
+    print("Good Job ")
+else:
+    print("Keep Practicing ")
