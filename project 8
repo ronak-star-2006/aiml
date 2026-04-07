@@ -1,0 +1,101 @@
+# Block 1: Imports
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from sklearn.inspection import DecisionBoundaryDisplay # Perfect for visualizing SVMs!
+
+print("Block 1 Complete: All libraries imported successfully!")
+# Block 2: Load and Filter the Data
+iris = load_iris()
+
+# Create a DataFrame
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+df['target'] = iris.target
+
+# SUPER IMPORTANT FOR VISUALIZATION:
+# 1. We only want two classes: Setosa (0) and Versicolor (1). We drop Virginica (2).
+df = df[df['target'] != 2]
+
+# 2. We only want two features so we can plot them on a 2D graph (X and Y axis)
+# Let's keep 'petal length (cm)' and 'petal width (cm)'
+X = df[['petal length (cm)', 'petal width (cm)']]
+y = df['target']
+
+print("Here is a peek at our simplified 2D dataset:")
+display(X.head())
+print(f"\nTotal flowers to classify: {len(X)}")
+# Block 3: Preprocessing
+# Split into 80% training and 20% testing
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+
+# Scale the data so petal length and petal width are on the exact same scale
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# We convert them back to DataFrames just to keep the column names for plotting later
+X_train_scaled = pd.DataFrame(X_train_scaled, columns=X.columns)
+X_test_scaled = pd.DataFrame(X_test_scaled, columns=X.columns)
+
+print("Block 3 Complete: Data split and standardized.")
+
+# Block 4: Train and Visualize the SVM
+# Create and train the model using a straight-line (linear) boundary
+svm_model = SVC(kernel='linear', C=1.0, random_state=42)
+svm_model.fit(X_train_scaled, y_train)
+
+# --- VISUALIZATION CODE ---
+plt.figure(figsize=(10, 6))
+
+# 1. Draw the decision boundary (the background colors)
+disp = DecisionBoundaryDisplay.from_estimator(
+    svm_model, 
+    X_train_scaled, 
+    response_method="predict",
+    cmap=plt.cm.coolwarm, 
+    alpha=0.4, 
+    ax=plt.gca()
+)
+
+# 2. Plot all our training data points on top
+scatter = plt.scatter(X_train_scaled['petal length (cm)'], 
+                      X_train_scaled['petal width (cm)'], 
+                      c=y_train, cmap=plt.cm.coolwarm, edgecolors='k', s=60)
+
+# 3. Highlight the "Support Vectors" (The most important points!)
+# We draw large hollow circles around the specific data points the SVM used to draw the line
+plt.scatter(svm_model.support_vectors_[:, 0], 
+            svm_model.support_vectors_[:, 1], 
+            s=200, facecolors='none', edgecolors='k', linewidth=2, 
+            label='Support Vectors')
+
+plt.title('SVM Decision Boundary (Linear Kernel)')
+plt.xlabel('Scaled Petal Length')
+plt.ylabel('Scaled Petal Width')
+plt.legend()
+plt.show()
+# Block 5: Evaluation
+from sklearn.metrics import classification_report, confusion_matrix
+
+# Make predictions on the hidden test data
+predictions = svm_model.predict(X_test_scaled)
+
+# Plot the confusion matrix
+cm = confusion_matrix(y_test, predictions)
+plt.figure(figsize=(5,3))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Greens', 
+            xticklabels=['Setosa', 'Versicolor'], 
+            yticklabels=['Setosa', 'Versicolor'])
+plt.title('How well did it predict the Test Data?')
+plt.ylabel('Actual Flower')
+plt.xlabel('Predicted Flower')
+plt.show()
+
+print("\nDetailed Report:")
+print(classification_report(y_test, predictions, target_names=['Setosa', 'Versicolor']))
