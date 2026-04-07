@@ -1,0 +1,28 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+data = {
+    'Size': [500, 800, 1000, 1200, 1500, 1800],
+    'Price': [25, 40, 50, 60, 75, 90]
+}
+
+df = pd.DataFrame(data)
+X = df[['Size']]   
+y = df['Price']
+
+model = LinearRegression()
+
+model.fit(X, y)
+
+house_size = [[1300]]
+predicted_price = model.predict(house_size)
+
+print("Predicted price for 1300 sqft house:", predicted_price[0], "Lakhs")
+
+plt.scatter(X, y)
+plt.plot(X, model.predict(X))
+plt.xlabel("House Size (sqft)")
+plt.ylabel("House Price (Lakhs)")
+plt.title("House Price Prediction using Linear Regression")
+plt.show()
