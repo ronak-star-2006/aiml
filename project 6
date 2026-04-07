@@ -1,0 +1,50 @@
+from reportlab.pdfgen import canvas
+from pypdf import PdfReader, PdfWriter
+import io
+
+# ✅ Correct file paths
+input_pdf = r"C:\Users\ronak\OneDrive\Desktop\AIML ASSIGNMENT.pdf"
+output_pdf = r"C:\Users\ronak\OneDrive\Desktop\output2.pdf"
+
+# Read input PDF
+reader = PdfReader(input_pdf)
+writer = PdfWriter()
+
+# Process each page
+for page in reader.pages:
+    packet = io.BytesIO()
+
+    # Get page size dynamically
+    width = float(page.mediabox.width)
+    height = float(page.mediabox.height)
+
+    # Create watermark
+    c = canvas.Canvas(packet, pagesize=(width, height))
+    c.setFont("Helvetica", 50)
+    c.setFillColorRGB(0.6, 0.6, 0.6)  # light grey
+
+    # Diagonal watermark
+    c.saveState()
+    c.translate(width / 2, height / 2)
+    c.rotate(45)
+    c.drawCentredString(0, 0, "UPES")
+    c.restoreState()
+
+    c.save()
+
+    # Move to start of BytesIO buffer
+    packet.seek(0)
+
+    # Read watermark PDF from memory
+    watermark_pdf = PdfReader(packet)
+    watermark_page = watermark_pdf.pages[0]
+
+    # Merge watermark with page
+    page.merge_page(watermark_page)
+    writer.add_page(page)
+
+# Save output PDF
+with open(output_pdf, "wb") as f:
+    writer.write(f)
+
+print("✅ Watermark 'UPES' added successfully!")
